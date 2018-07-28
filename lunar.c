@@ -22,6 +22,22 @@
 #include <stdlib.h>
 
 /*----------------------------------------------------------------------------*/
+// filelength is a Windows-specific function
+// https://msdn.microsoft.com/en-us/library/dfbc2kec.aspx?f=255&MSPPError=-2147217396
+#ifndef WIN32
+# include <sys/stat.h>
+long filelength(int fd) {
+  struct stat *buf = malloc(sizeof(stat));
+  int res = fstat(fd, buf);
+  if (res == -1) {
+    return -1;
+  }
+
+  return buf->st_size;
+}
+#endif
+
+/*----------------------------------------------------------------------------*/
 #define EXIT(text) { printf(text); exit(EXIT_FAILURE); }
 
 /*----------------------------------------------------------------------------*/
